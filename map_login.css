@@ -8,24 +8,30 @@ body {
   animation: fadein 1s;
   background-color: #fce9cf;
   font-family: 'Roboto Mono', monospace;
-  margin: 0;
-  position: absolute;
-  top: 33%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  margin-top: 10px;
   text-align: center;
 }
 
 h1 {
-  font-size: 6vw;
+  font-size: min(8vw, 80px);
   white-space: nowrap;
   padding-bottom: 40px;
+  margin-top: 10px;
 }
 
 h2 {
   font-size: 30px;
   margin-bottom: -5px;
+}
+
+#login {
+  position:    absolute;
+  left:        50%;
+  top:         55%;
+  width:       300px;
+  height:      350px;
+  margin-left: -150px;
+  margin-top:  -175px;
 }
 
 input {
