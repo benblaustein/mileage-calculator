@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Display driving directions</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css" type="text/css" />
+  <link rel="stylesheet" href="map_main.css">
+</head>
+
+<body>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
+  <div id="map"></div>
+
+  <div id="other">
+
+    <div class="frequency">
+
+      I make this trip 
+      <input id="times" type="number">
+      times per
+
+      <select name="duration" id="duration">
+        <option value="day">day</option>
+        <option value="week">week</option>
+        <option value="month">month</option>
+        <option value="year">year</option>
+      </select>
+
+      <button onclick="addRoute()" id="add_button" disabled="disabled">+ add</button>
+
+    </div>
+
+    <div>
+      <table id="route_table">
+        <tr>
+          <th>Origin</th>
+          <th>Destination</th>
+          <th>Distance</th>
+          <th>Frequency</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+    // initialize map
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYmVuYmxhdXN0ZWluIiwiYSI6ImNrN2EzbzRkeDB5cHczb3M3Mno5bGM2MTgifQ.094b7rNbJRqRec3zTi32vA';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [0, 0],
+      zoom: 1
+    });
+   
+    // initialize directions api
+    var directions = new MapboxDirections({
+      accessToken: mapboxgl.accessToken
+    })
+    map.addControl(directions, 'top-right');
+
+    // initialize geolocation
+    map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+      })
+    );
+
+    // set route variables
+    var routeExists = false;
+    var routeLength = 0;
+    var routeOrigin;
+    var routeDestination;
+
+    // listener for completion of fields
+    document.getElementById("times")
+      .addEventListener("keyup", function(event) {
+      event.preventDefault();
+      if (document.getElementById("times").value == "" || !routeExists) {
+        document.getElementById("add_button").setAttribute("disabled", "disabled");
+      }
+      else {
+        document.getElementById("add_button").removeAttribute("disabled");
+      }
+    });
+
+    // listener for created routes
+    directions.on("route", e => {
+      let routes = e.route;
+      routeLength = routes.map(r => r.distance)
+      routeExists = true;
+      if (document.getElementById("times").value == "") {
+        document.getElementById("add_button").setAttribute("disabled", "disabled");
+      }
+      else {
+        document.getElementById("add_button").removeAttribute("disabled");
+      }
+    })
+
+    // listener for cleared waypoints
+    directions.on("clear", e => {
+      routeExists = false;
+      document.getElementById("add_button").setAttribute("disabled", "disabled");
+    })
+
+    // listener for set origin
+    directions.on("origin", e => {
+      origin = e.feature;
+      var elms = document.getElementById("mapbox-directions-origin-input").getElementsByTagName("input");
+      var address = elms[0].value;
+      var commas;
+      if (isCoordinate(address)) {
+        commas = 1;
+      }
+      else {
+        commas = 0;
+      }
+      tokens = address.split(',').slice(0, commas + 1);
+      result = tokens.join(',');
+      routeOrigin = result;
+    })
+
+    // listener for set destination
+    directions.on("destination", e => {
+      destination = e.feature;
+      var elms = document.getElementById("mapbox-directions-destination-input").getElementsByTagName("input");
+      var address = elms[0].value;
+      var commas;
+      if (isCoordinate(address)) {
+        commas = 1;
+      }
+      else {
+        commas = 0;
+      }
+      tokens = address.split(',').slice(0, commas + 1);
+      result = tokens.join(',');
+      routeDestination = result;
+    })
+
+    // to detect if a string is an address or a set of coordinates
+    function isCoordinate(s) {
+      tokens = s.split(',').slice(0, 2);
+      if (tokens.length != 2) {
+        return false;
+      }
+      return !isNaN(tokens[0]) && !isNaN(tokens[1]);
+    }
+
+    // add route to list
+    function addRoute() {
+      var table = document.getElementById("route_table");
+      var tlen = table.rows.length;
+      var row = table.insertRow(tlen);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+      var cell4 = row.insertCell(3);
+      cell1.innerHTML = routeOrigin;
+      cell2.innerHTML = routeDestination;
+      cell3.innerHTML = (routeLength * 0.0006213710).toFixed(1) + " mi";
+
+      var duration = document.getElementById("duration");
+      var selectedDuration = duration.options[duration.selectedIndex].value;
+      cell4.innerHTML = document.getElementById("times").value.toString() + "x/" + selectedDuration;
+    }
+
+  </script>
+
+</body>
+</html>
