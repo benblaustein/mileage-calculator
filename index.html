@@ -9,34 +9,22 @@
 <body>
   <h1>Mileage Calculator</h1>
   <div id="login">
-    <h2>Log in</h2>
-    <br>
-    <input type="text" placeholder="username" id="username">
-    <br>
-    <input type="password" placeholder="password" id="password">
-    <br>
+    <h2>Log in</h2><br>
+    <input type="text" placeholder="username" id="username"><br>
+    <input type="password" placeholder="password" id="password"><br>
     <button onclick="document.location='map_main.html'" id="login_button">Sign in</button>
-    <a href id="create_account">New? Create an account</a>
-    <br>
-    <div class="or">
-      <div class="lines">–––––––––</div> or <div class="lines">–––––––––</div>
-    </div>
-    <br>
+    <a href id="create_account">New? Create an account</a><br>
+    <div class="or">––––––––– or –––––––––</div><br>
     <a id="continue" href="map_main.html">Continue as a guest</a>
   </div>
 
 <script>
-  // Get the input field
   var inputs = document.getElementsByTagName('input');
 
   for (var index = 0; index < inputs.length; ++index) {
-    // Execute a function when the user releases a key on the keyboard
     inputs[index].addEventListener("keyup", function(event) {
-      // Number 13 is the "Enter" key on the keyboard
       if (event.keyCode === 13) {
-        // Cancel the default action, if needed
         event.preventDefault();
-        // Trigger the button element with a click
         document.getElementById("login_button").click();
       }
     });

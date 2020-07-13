@@ -6,8 +6,8 @@ body {
   -ms-animation: fadein 1s; /* Internet Explorer */
   -o-animation: fadein 1s; /* Opera < 12.1 */
   animation: fadein 1s;
-  background-color: #fce9cf;
-  font-family: 'Roboto Mono', monospace;
+  background-color: #f2f2f2;
+  font-family: 'Helvetica Neue';
   margin-top: 10px;
   text-align: center;
 }
@@ -27,7 +27,7 @@ h2 {
 #login {
   position:    absolute;
   left:        50%;
-  top:         55%;
+  top:         50%;
   width:       300px;
   height:      350px;
   margin-left: -150px;
@@ -39,7 +39,7 @@ input {
   height: 35px;
   margin-bottom: 5px;
   font-size: 16px;
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Helvetica Neue';
   color: #555;
   background-color: #f3f3f3;
   border-style: solid;
@@ -64,7 +64,7 @@ input:focus {
   color: white;
   font-size: 16px;
   margin: auto;
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Helvetica Neue';
   cursor: pointer;
   margin-bottom: 10px;
 }
@@ -90,11 +90,6 @@ input:focus {
 .or {
   display: inline-block;
   margin-top: 8px;
-}
-
-.lines {
-  font-family: 'Avenir';
-  display: inline-block;
 }
 
 #continue {

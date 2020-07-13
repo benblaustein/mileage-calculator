@@ -9,6 +9,7 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css" type="text/css" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="map_main.css">
 </head>
 
@@ -16,35 +17,35 @@
 
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js"></script>
   <div id="map"></div>
-
   <div id="other">
 
     <div class="frequency">
-
-      I make this trip 
+      I make this trip&nbsp;&nbsp;
       <input id="times" type="number">
-      times per
-
+      &nbsp;&nbsp;times per&nbsp;&nbsp;
       <select name="duration" id="duration">
         <option value="day">day</option>
+        <option value="weekday">weekday</option>
+        <option value="weekend">weekend</option>
         <option value="week">week</option>
         <option value="month">month</option>
         <option value="year">year</option>
       </select>
-
       <button onclick="addRoute()" id="add_button" disabled="disabled">+ add</button>
-
     </div>
 
-    <div>
+    <div id="table_wrapper">
       <table id="route_table">
         <tr>
-          <th>Origin</th>
-          <th>Destination</th>
-          <th>Distance</th>
-          <th>Frequency</th>
+          <th class="truncate" style="width: 12vw">Origin</th>
+          <th class="truncate" style="width: 12vw">Destination</th>
+          <th class="truncate" style="width: 8vw">Distance</th>
+          <th class="truncate" style="width: 8vw">Frequency</th>
         </tr>
       </table>
+    </div>
+    <div id="total">
+      <span id="dist_traveled">Total distance traveled per year:&nbsp;</span><span id="num_total">0 miles</span>
     </div>
   </div>
 
@@ -80,6 +81,9 @@
     var routeLength = 0;
     var routeOrigin;
     var routeDestination;
+    var totalDistance = 0;
+    const METERS_TO_MILES = 0.0006213710;
+    const METERS_TO_KM = 0.001;
 
     // listener for completion of fields
     document.getElementById("times")
@@ -117,16 +121,21 @@
       origin = e.feature;
       var elms = document.getElementById("mapbox-directions-origin-input").getElementsByTagName("input");
       var address = elms[0].value;
-      var commas;
       if (isCoordinate(address)) {
-        commas = 1;
+        const Http = new XMLHttpRequest();
+        const url='https://api.mapbox.com/geocoding/v5/mapbox.places/' + address + '.json?access_token=' + mapboxgl.accessToken;
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange = (e) => {
+          var response = JSON.parse(Http.responseText);
+          address = response.features[0].place_name;
+          routeOrigin = address.substr(0, address.indexOf(','));
+        }
       }
       else {
-        commas = 0;
+        routeOrigin = address.substr(0, address.indexOf(','));
       }
-      tokens = address.split(',').slice(0, commas + 1);
-      result = tokens.join(',');
-      routeOrigin = result;
     })
 
     // listener for set destination
@@ -134,16 +143,21 @@
       destination = e.feature;
       var elms = document.getElementById("mapbox-directions-destination-input").getElementsByTagName("input");
       var address = elms[0].value;
-      var commas;
       if (isCoordinate(address)) {
-        commas = 1;
+        const Http = new XMLHttpRequest();
+        const url='https://api.mapbox.com/geocoding/v5/mapbox.places/' + address + '.json?access_token=' + mapboxgl.accessToken;
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange = (e) => {
+          var response = JSON.parse(Http.responseText);
+          address = response.features[0].place_name;
+          routeDestination = address.substr(0, address.indexOf(','));
+        }
       }
       else {
-        commas = 0;
+        routeDestination = address.substr(0, address.indexOf(','));
       }
-      tokens = address.split(',').slice(0, commas + 1);
-      result = tokens.join(',');
-      routeDestination = result;
     })
 
     // to detect if a string is an address or a set of coordinates
@@ -164,13 +178,45 @@
       var cell2 = row.insertCell(1);
       var cell3 = row.insertCell(2);
       var cell4 = row.insertCell(3);
+      cell1.setAttribute("class", "truncate")
+      cell2.setAttribute("class", "truncate")
+      cell3.setAttribute("class", "truncate")
+      cell4.setAttribute("class", "truncate")
+      cell1.setAttribute("class", "col1")
+      cell2.setAttribute("class", "col1")
+      cell3.setAttribute("class", "col3")
+      cell4.setAttribute("class", "col3")
       cell1.innerHTML = routeOrigin;
       cell2.innerHTML = routeDestination;
-      cell3.innerHTML = (routeLength * 0.0006213710).toFixed(1) + " mi";
+      cell3.innerHTML = (routeLength * METERS_TO_MILES).toFixed(1) + " mi";
 
       var duration = document.getElementById("duration");
       var selectedDuration = duration.options[duration.selectedIndex].value;
-      cell4.innerHTML = document.getElementById("times").value.toString() + "x/" + selectedDuration;
+      var numTimes = document.getElementById("times").value;
+      cell4.innerHTML = numTimes + "x/" + selectedDuration;
+
+      switch(selectedDuration) {
+        case ("day"):
+          totalDistance += numTimes * 365 * routeLength * METERS_TO_MILES;
+          break;
+        case ("weekday"):
+          totalDistance += numTimes * 261 * routeLength * METERS_TO_MILES;
+          break;
+        case ("weekend"):
+          totalDistance += numTimes * 104 * routeLength * METERS_TO_MILES;
+          break;
+        case ("week"):
+          totalDistance += numTimes * 52 * routeLength * METERS_TO_MILES;
+          break;
+        case ("month"):
+          totalDistance += numTimes * 12 * routeLength * METERS_TO_MILES;
+          break;
+        case ("year"):
+          totalDistance += numTimes * 1 * routeLength * METERS_TO_MILES;
+          break;
+      }
+
+      document.getElementById("num_total").innerHTML = totalDistance.toFixed(1) + " miles";
     }
 
   </script>
