@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html>
-<title>Login</title>
-<head>
-  <link rel="stylesheet" href="map_login.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+  <title>Login</title>
+  <head>
+    <link rel="stylesheet" href="map_login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
 
-<body>
-  <h1>Mileage Calculator</h1>
-  <div id="login">
-    <h2>Log in</h2><br>
-    <input type="text" placeholder="username" id="username"><br>
-    <input type="password" placeholder="password" id="password"><br>
-    <button onclick="document.location='map_main.html'" id="login_button">Sign in</button>
-    <a href id="create_account">New? Create an account</a><br>
-    <div class="or">––––––––– or –––––––––</div><br>
-    <a id="continue" href="map_main.html">Continue as a guest</a>
-  </div>
+  <body>
+    <h1>Mileage Calculator</h1>
 
-<script>
-  var inputs = document.getElementsByTagName('input');
+    <div id="buttons">
+      <button onclick="document.location='map_instructions.html'">View instructions</button>
+      <button onclick="document.location='map_main.html'">Continue</button>
+    </div>
+    <!--
+    <div id="login">
+      <h2>Log in</h2><br>
+      <input type="text" placeholder="username" id="username"><br>
+      <input type="password" placeholder="password" id="password"><br>
+      <button onclick="document.location='map_main.html'" id="login_button">Sign in</button>
+      <a href id="create_account">New? Create an account</a><br>
+      <div class="or">––––––––– or –––––––––</div><br>
+      <a id="continue" href="map_main.html">Continue as a guest</a>
+    </div>
 
-  for (var index = 0; index < inputs.length; ++index) {
-    inputs[index].addEventListener("keyup", function(event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById("login_button").click();
-      }
-    });
-  };
-</script>
+    <script>
+      var inputs = document.getElementsByTagName('input');
 
-</body>
+      for (var index = 0; index < inputs.length; ++index) {
+        inputs[index].addEventListener("keyup", function(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("login_button").click();
+          }
+        });
+      };
+    </script>
+    -->
+
+  </body>
 
 </html>

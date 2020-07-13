@@ -1,0 +1,44 @@
+body {  
+  -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 1s; /* Firefox < 16 */
+  -ms-animation: fadein 1s; /* Internet Explorer */
+  -o-animation: fadein 1s; /* Opera < 12.1 */
+  animation: fadein 1s;
+  background-color: #f2f2f2;
+  font-family: 'Helvetica Neue';
+  margin-top: 10px;
+  text-align: center;
+}
+
+h2 {
+  font-size: min(4vw, 50px);
+  white-space: nowrap;
+  margin-top: 20px;
+}
+
+h3 {
+  font-size: min(4vw, 40px);
+  white-space: nowrap;
+}
+
+ul {
+  margin: auto;
+  text-align: left;
+  font-size: 18px;
+  width: 80%;
+}
+
+button {
+  width: 228px;
+  height: 43px;
+  display: block;
+  border: none;
+  border-radius: 0;
+  background: #333;
+  color: white;
+  font-size: 16px;
+  margin: auto;
+  font-family: 'Helvetica Neue';
+  cursor: pointer;
+  margin-bottom: 10px;
+}
