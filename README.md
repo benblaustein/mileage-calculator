@@ -1,6 +1,6 @@
 # Hello!
 
-##### Welcome to my mileage calculator project!
+### Welcome to my mileage calculator project!
 
 The purpose of this site is to allow you to enter commonly traveled routes into a Mapbox javascript plugin, along with the frequency with which you travel those routes, and you will be shown a running tally of your total mileage per year based on the given routes and respective frequencies.
 
